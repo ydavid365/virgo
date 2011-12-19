@@ -140,7 +140,8 @@ typedef enum {
   UV_ARES_TASK,
   UV_ARES_EVENT,
   UV_PROCESS,
-  UV_FS_EVENT
+  UV_FS_EVENT,
+  UV_CUSTOM_HANDLE
 } uv_handle_type;
 
 typedef enum {
@@ -1354,6 +1355,10 @@ struct uv_loop_s {
 };
 
 
+#define UV_CUSTOM_FIELDS
+  /* TODO: add custom fields. */
+
+#ifndef UV_EXPORT_PRIVATE
 /* Don't export the private CPP symbols. */
 #undef UV_REQ_TYPE_PRIVATE
 #undef UV_REQ_PRIVATE_FIELDS
@@ -1368,6 +1373,7 @@ struct uv_loop_s {
 #undef UV_FS_REQ_PRIVATE_FIELDS
 #undef UV_WORK_PRIVATE_FIELDS
 #undef UV_FS_EVENT_PRIVATE_FIELDS
+#endif
 
 #ifdef __cplusplus
 }
