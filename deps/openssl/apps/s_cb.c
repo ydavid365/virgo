@@ -549,6 +549,9 @@ void MS_CALLBACK msg_cb(int write_p, int version, int content_type, const void *
 				case 114:
 					str_details2 = " bad_certificate_hash_value";
 					break;
+				case 115:
+					str_details2 = " unknown_psk_identity";
+					break;
 					}
 				}
 			}
@@ -597,6 +600,26 @@ void MS_CALLBACK msg_cb(int write_p, int version, int content_type, const void *
 					}
 				}
 			}
+
+#ifndef OPENSSL_NO_HEARTBEATS
+		if (content_type == 24) /* Heartbeat */
+			{
+			str_details1 = ", Heartbeat";
+			
+			if (len > 0)
+				{
+				switch (((const unsigned char*)buf)[0])
+					{
+				case 1:
+					str_details1 = ", HeartbeatRequest";
+					break;
+				case 2:
+					str_details1 = ", HeartbeatResponse";
+					break;
+					}
+				}
+			}
+#endif
 		}
 
 	BIO_printf(bio, "%s %s%s [length %04lx]%s%s\n", str_write_p, str_version, str_content_type, (unsigned long)len, str_details1, str_details2);
@@ -671,6 +694,10 @@ void MS_CALLBACK tlsext_cb(SSL *s, int client_server, int type,
 
 		case TLSEXT_TYPE_renegotiate:
 		extname = "renegotiate";
+		break;
+
+		case TLSEXT_TYPE_signature_algorithms:
+		extname = "signature algorithms";
 		break;
 
 #ifdef TLSEXT_TYPE_opaque_prf_input
