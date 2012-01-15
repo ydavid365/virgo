@@ -33,6 +33,9 @@ int luv_hrtime(lua_State* L);
 int luv_get_free_memory(lua_State* L);
 int luv_get_total_memory(lua_State* L);
 int luv_loadavg(lua_State* L);
+int luv_uptime(lua_State* L);
+int luv_cpu_info(lua_State* L);
+int luv_interface_addresses(lua_State* L);
 int luv_execpath(lua_State* L);
 int luv_handle_type(lua_State* L);
 

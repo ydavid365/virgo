@@ -27,6 +27,7 @@
 #include "luvit.h"
 #include "uv.h"
 #include "utils.h"
+#include "los.h"
 #include "luv.h"
 #include "luv_dns.h"
 #include "luv_portability.h"
@@ -96,6 +97,9 @@ int main(int argc, char *argv[])
   // Register yajl
   lua_pushcfunction(L, luaopen_yajl);
   lua_setfield(L, -2, "yajl");
+  // Register os
+  lua_pushcfunction(L, luaopen_os_binding);
+  lua_setfield(L, -2, "os_binding");
   // Register http_parser
   lua_pushcfunction(L, luaopen_http_parser);
   lua_setfield(L, -2, "http_parser");
@@ -129,9 +133,20 @@ int main(int argc, char *argv[])
   lua_pushcfunction(L, luvit_getcwd);
   lua_setglobal(L, "getcwd");
 
-  // Register OS
-  lua_pushstring(L, LUVIT_OS);
-  lua_setglobal(L, "luvit_os");
+  lua_pushstring(L, LUVIT_VERSION);
+  lua_setglobal(L, "VERSION");
+
+  lua_pushstring(L, UV_VERSION);
+  lua_setglobal(L, "UV_VERSION");
+  
+  lua_pushstring(L, LUAJIT_VERSION);
+  lua_setglobal(L, "LUAJIT_VERSION");
+
+  lua_pushstring(L, HTTP_VERSION);
+  lua_setglobal(L, "HTTP_VERSION");
+
+  lua_pushstring(L, YAJL_VERSIONISH);
+  lua_setglobal(L, "YAJL_VERSION");
 
   // Hold a reference to the main thread in the registry
   assert(lua_pushthread(L) == 1);

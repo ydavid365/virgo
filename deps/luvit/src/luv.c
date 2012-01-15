@@ -150,6 +150,9 @@ static const luaL_reg luv_f[] = {
   {"get_free_memory", luv_get_free_memory},
   {"get_total_memory", luv_get_total_memory},
   {"loadavg", luv_loadavg},
+  {"uptime", luv_uptime},
+  {"cpu_info", luv_cpu_info},
+  {"interface_addresses", luv_interface_addresses},
   {"execpath", luv_execpath},
   {"handle_type", luv_handle_type},
   {"activate_signal_handler", luv_activate_signal_handler},
@@ -206,9 +209,10 @@ static const luaL_reg luv_stream_m[] = {
 };
 
 static const luaL_reg luv_tcp_m[] = {
+  {"nodelay", luv_tcp_nodelay},
+  {"keepalive", luv_tcp_keepalive},
   {"bind", luv_tcp_bind},
   {"bind6", luv_tcp_bind6},
-  {"nodelay", luv_tcp_nodelay},
   {"getsockname", luv_tcp_getsockname},
   {"getpeername", luv_tcp_getpeername},
   {"connect", luv_tcp_connect},

@@ -16,7 +16,6 @@ limitations under the License.
 
 --]]
 
-VERSION = "0.1.4"
 -- clear some globals
 -- This will break lua code written for other lua runtimes
 _G.io = nil
@@ -46,12 +45,29 @@ local Emitter = require('emitter')
 local Constants = require('constants')
 local Path = require('path')
 
+local OLD_OS = require('os')
+local OS_BINDING = require('os_binding')
+package.loaded.os = OS_BINDING
+package.preload.os_binding = nil
+package.loaded.os_binding = nil
+OS_BINDING.date = OLD_OS.date
+OS_BINDING.time = OLD_OS.time
+
 process = Emitter.new()
+local VERSION = _G.VERSION
 process.version = VERSION
 process.versions = {
   luvit = VERSION,
-  uv = UV.VERSION_MAJOR .. "." .. UV.VERSION_MINOR,
+  uv = UV.VERSION_MAJOR .. "." .. UV.VERSION_MINOR .. "-" .. UV_VERSION,
+  luajit = LUAJIT_VERSION,
+  yajl = YAJL_VERSION,
+  http_parser = HTTP_VERSION,
 }
+_G.VERSION = nil
+_G.YAJL_VERSION = nil
+_G.LUAJIT_VERSION = nil
+_G.UV_VERSION = nil
+_G.HTTP_VERSION = nil
 
 function process.exit(exit_code)
   process:emit('exit', exit_code)

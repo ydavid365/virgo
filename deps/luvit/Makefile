@@ -1,7 +1,12 @@
+VERSION=$(shell git describe --tags)
 LUADIR=deps/luajit
-UVDIR=deps/uv
-HTTPDIR=deps/http-parser
+LUAJIT_VERSION=$(shell git --git-dir ${LUADIR}/.git describe --tags)
 YAJLDIR=deps/yajl
+YAJL_VERSION=$(shell git --git-dir ${YAJLDIR}/.git describe --tags)
+UVDIR=deps/uv
+UV_VERSION=$(shell git --git-dir ${UVDIR}/.git describe --all --long | cut -f 3 -d -)
+HTTPDIR=deps/http-parser
+HTTP_VERSION=$(shell git --git-dir ${HTTPDIR}/.git describe --tags)
 BUILDDIR=build
 GENDIR=${BUILDDIR}/generated
 PREFIX?=/usr/local
@@ -71,6 +76,7 @@ LUVLIBS=${BUILDDIR}/utils.o          \
         ${BUILDDIR}/lconstants.o     \
         ${BUILDDIR}/lenv.o           \
         ${BUILDDIR}/lyajl.o          \
+        ${BUILDDIR}/los.o            \
         ${BUILDDIR}/lhttp_parser.o
 
 ALLLIBS=${BUILDDIR}/luvit.o       \
@@ -125,7 +131,7 @@ ${GENDIR}/%.o: ${GENDIR}/%.c
 
 ${BUILDDIR}/%.o: src/%.c src/%.h deps
 	mkdir -p ${BUILDDIR}
-	$(CC) -g -Wall -Werror -c $< -o $@ -I${HTTPDIR} -I${UVDIR}/include -I${LUADIR}/src -I${YAJLDIR}/src/api -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DLUVIT_OS=\"unix\"
+	$(CC) -g -Wall -Werror -c $< -o $@ -I${HTTPDIR} -I${UVDIR}/include -I${LUADIR}/src -I${YAJLDIR}/src/api -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DHTTP_VERSION=\"${HTTP_VERSION}\" -DUV_VERSION=\"${UV_VERSION}\" -DYAJL_VERSIONISH=\"${YAJL_VERSION}\" -DLUVIT_VERSION=\"${VERSION}\" -DLUAJIT_VERSION=\"${LUAJIT_VERSION}\"
 
 ${BUILDDIR}/luvit: ${GENDIR} ${ALLLIBS}
 	$(CC) -g -o ${BUILDDIR}/luvit ${ALLLIBS} -Wall -lm -ldl -lpthread ${LDFLAGS}
@@ -164,5 +170,25 @@ examples/native/vector.luvit: examples/native/vector.c examples/native/vector.h
 
 test: examples/native/vector.luvit
 	cd tests && ../${BUILDDIR}/luvit runner.lua
+
+DIST_DIR=${HOME}/luvit.io/dist
+DIST_NAME=luvit-${VERSION}
+DIST_FOLDER=${DIST_DIR}/${VERSION}/${DIST_NAME}
+DIST_FILE=${DIST_FOLDER}.tar.gz
+tarball:
+	rm -rf ${DIST_FOLDER} ${DIST_FILE}
+	mkdir -p ${DIST_DIR}
+	git clone . ${DIST_FOLDER}
+	cp deps/gitmodules.local ${DIST_FOLDER}/.gitmodules
+	cd ${DIST_FOLDER} ; git submodule update --init
+	find ${DIST_FOLDER} -name ".git*" | xargs rm -r
+	sed -e 's/^VERSION=.*/VERSION=${VERSION}/' \
+            -e 's/^LUAJIT_VERSION=.*/LUAJIT_VERSION=${LUAJIT_VERSION}/' \
+            -e 's/^UV_VERSION=.*/UV_VERSION=${UV_VERSION}/' \
+            -e 's/^HTTP_VERSION=.*/HTTP_VERSION=${HTTP_VERSION}/' \
+            -e 's/^YAJL_VERSION=.*/YAJL_VERSION=${YAJL_VERSION}/' < ${DIST_FOLDER}/Makefile > ${DIST_FOLDER}/Makefile.patched
+	mv ${DIST_FOLDER}/Makefile.patched ${DIST_FOLDER}/Makefile
+	tar -czf ${DIST_FILE} -C ${DIST_DIR}/${VERSION} ${DIST_NAME}
+	rm -rf ${DIST_FOLDER}
 
 .PHONY: test install all
