@@ -20,50 +20,25 @@
  */
 
 #include "uv.h"
-#include "internal.h"
+#include "task.h"
 
-#include <dlfcn.h>
-#include <errno.h>
+static idle_counter = 0;
 
-/* The dl family of functions don't set errno. We need a good way to communicate
- * errors to the caller but there is only dlerror() and that returns a string -
- * a string that may or may not be safe to keep a reference to...
- */
-static const uv_err_t uv_inval_ = { UV_EINVAL, EINVAL };
-
-
-uv_err_t uv_dlopen(const char* filename, uv_lib_t* library) {
-  void* handle = dlopen(filename, RTLD_LAZY);
-  if (handle == NULL) {
-    return uv_inval_;
-  }
-
-  *library = handle;
-  return uv_ok_;
+static void idle_cb(uv_idle_t* handle, int status) {
+  ASSERT(handle != NULL);
+  ASSERT(status == 0);
+  idle_counter ++;
 }
 
 
-uv_err_t uv_dlclose(uv_lib_t library) {
-  if (dlclose(library) != 0) {
-    return uv_inval_;
+TEST_IMPL(run_once) {
+  int n;
+  uv_idle_t h;
+  uv_idle_init(uv_default_loop(), &h);
+  uv_idle_start(&h, idle_cb);
+  for (n = 0; n < 500; n++) {
+    uv_run_once(uv_default_loop());
   }
-
-  return uv_ok_;
-}
-
-
-uv_err_t uv_dlsym(uv_lib_t library, const char* name, void** ptr) {
-  void* address;
-
-  /* Reset error status. */
-  dlerror();
-
-  address = dlsym(library, name);
-
-  if (dlerror()) {
-    return uv_inval_;
-  }
-
-  *ptr = (void*) address;
-  return uv_ok_;
+  ASSERT(n == 500);
+  return 0;
 }

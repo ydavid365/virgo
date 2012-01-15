@@ -23,6 +23,7 @@
 # define _WIN32_WINNT   0x0502
 #endif
 
+#include <process.h>
 #include <stdint.h>
 #include <winsock2.h>
 #include <mswsock.h>
@@ -102,6 +103,9 @@
                        LPOVERLAPPED lpOverlapped,
                        LPTRANSMIT_FILE_BUFFERS lpTransmitBuffers,
                        DWORD dwFlags);
+
+  typedef PVOID RTL_SRWLOCK;
+  typedef RTL_SRWLOCK SRWLOCK, *PSRWLOCK;
 #endif
 
 typedef int (WSAAPI* LPFN_WSARECV)
@@ -144,13 +148,23 @@ typedef CRITICAL_SECTION uv_mutex_t;
 typedef union {
   /* srwlock_ has type SRWLOCK, but not all toolchains define this type in */
   /* windows.h. */
-  void* srwlock_;
+  SRWLOCK srwlock_;
   struct {
     uv_mutex_t read_mutex_;
     uv_mutex_t write_mutex_;
     unsigned int num_readers_;
   } fallback_;
 } uv_rwlock_t;
+
+#define UV_ONCE_INIT { 0, NULL, NULL }
+
+typedef struct uv_once_s {
+  unsigned char ran;
+  /* The actual event handle must be aligned to sizeof(HANDLE), so in */
+  /* practice it might overlap padding a little. */
+  HANDLE event;
+  HANDLE padding;
+} uv_once_t;
 
 /* Platform-specific definitions for uv_dlopen support. */
 typedef HMODULE uv_lib_t;
@@ -429,7 +443,7 @@ RB_HEAD(uv_timer_tree_s, uv_timer_s);
   uv_fs_event_cb cb;                      \
   wchar_t* filew;                         \
   wchar_t* short_filew;                   \
-  int is_path_dir;                        \
+  wchar_t* dirw;                          \
   char* buffer;
 
 int uv_utf16_to_utf8(const wchar_t* utf16Buffer, size_t utf16Size,

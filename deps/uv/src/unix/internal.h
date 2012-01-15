@@ -59,6 +59,18 @@
 #  define HAVE_SYS_ACCEPT4 1
 # endif
 
+# ifndef O_CLOEXEC
+#  define O_CLOEXEC 02000000
+# endif
+
+# ifndef SOCK_CLOEXEC
+#  define SOCK_CLOEXEC O_CLOEXEC
+# endif
+
+# ifndef SOCK_NONBLOCK
+#  define SOCK_NONBLOCK O_NONBLOCK
+# endif
+
 # if HAVE_SYS_UTIMESAT
 inline static int sys_utimesat(int dirfd,
                                const char* path,
@@ -143,7 +155,6 @@ enum {
 };
 
 int uv__close(int fd);
-void uv__req_init(uv_req_t*);
 void uv__handle_init(uv_loop_t* loop, uv_handle_t* handle, uv_handle_type type);
 
 
@@ -154,6 +165,9 @@ int uv__socket(int domain, int type, int protocol);
 /* error */
 uv_err_code uv_translate_sys_error(int sys_errno);
 void uv_fatal_error(const int errorno, const char* syscall);
+
+/* requests */
+void uv__req_init(uv_loop_t* loop, uv_req_t*);
 
 /* stream */
 void uv__stream_init(uv_loop_t* loop, uv_stream_t* stream,
@@ -182,5 +196,10 @@ void uv__udp_watcher_stop(uv_udp_t* handle, ev_io* w);
 
 /* fs */
 void uv__fs_event_destroy(uv_fs_event_t* handle);
+
+#define UV__F_IPC        (1 << 0)
+#define UV__F_NONBLOCK   (1 << 1)
+int uv__make_socketpair(int fds[2], int flags);
+int uv__make_pipe(int fds[2], int flags);
 
 #endif /* UV_UNIX_INTERNAL_H_ */

@@ -19,6 +19,7 @@
  * IN THE SOFTWARE.
  */
 
+TEST_DECLARE   (platform_output)
 TEST_DECLARE   (tty)
 TEST_DECLARE   (stdio_over_pipes)
 TEST_DECLARE   (ipc_listen_before_write)
@@ -77,6 +78,7 @@ TEST_DECLARE   (check_ref)
 TEST_DECLARE   (unref_in_prepare_cb)
 TEST_DECLARE   (async)
 TEST_DECLARE   (get_currentexe)
+TEST_DECLARE   (process_title)
 TEST_DECLARE   (cwd_and_chdir)
 TEST_DECLARE   (get_memory)
 TEST_DECLARE   (hrtime)
@@ -113,16 +115,19 @@ TEST_DECLARE   (fs_event_watch_file)
 TEST_DECLARE   (fs_event_watch_file_current_dir)
 TEST_DECLARE   (fs_event_no_callback_on_close)
 TEST_DECLARE   (fs_event_immediate_close)
+TEST_DECLARE   (fs_event_unref)
 TEST_DECLARE   (fs_readdir_empty_dir)
 TEST_DECLARE   (fs_readdir_file)
 TEST_DECLARE   (fs_open_dir)
+TEST_DECLARE   (fs_rename_to_existing_file)
 TEST_DECLARE   (threadpool_queue_work_simple)
+TEST_DECLARE   (threadpool_multiple_event_loops)
 TEST_DECLARE   (thread_mutex)
 TEST_DECLARE   (thread_rwlock)
 TEST_DECLARE   (thread_create)
 TEST_DECLARE   (strlcpy)
 TEST_DECLARE   (strlcat)
-
+TEST_DECLARE   (counters_init)
 #ifdef _WIN32
 TEST_DECLARE   (spawn_detect_pipe_name_collisions_on_windows)
 TEST_DECLARE   (argument_escaping)
@@ -136,6 +141,8 @@ HELPER_DECLARE (pipe_echo_server)
 
 
 TASK_LIST_START
+  TEST_OUTPUT_ENTRY  (platform_output)
+
   TEST_ENTRY  (pipe_connect_bad_name)
 
   TEST_ENTRY  (tty)
@@ -224,6 +231,8 @@ TASK_LIST_START
 
   TEST_ENTRY  (get_currentexe)
 
+  TEST_ENTRY  (process_title)
+
   TEST_ENTRY  (cwd_and_chdir)
 
   TEST_ENTRY  (get_memory)
@@ -274,16 +283,19 @@ TASK_LIST_START
   TEST_ENTRY  (fs_event_watch_file_current_dir)
   TEST_ENTRY  (fs_event_no_callback_on_close)
   TEST_ENTRY  (fs_event_immediate_close)
+  TEST_ENTRY  (fs_event_unref)
   TEST_ENTRY  (fs_readdir_empty_dir)
   TEST_ENTRY  (fs_readdir_file)
   TEST_ENTRY  (fs_open_dir)
+  TEST_ENTRY  (fs_rename_to_existing_file)
   TEST_ENTRY  (threadpool_queue_work_simple)
+  TEST_ENTRY  (threadpool_multiple_event_loops)
   TEST_ENTRY  (thread_mutex)
   TEST_ENTRY  (thread_rwlock)
   TEST_ENTRY  (thread_create)
   TEST_ENTRY  (strlcpy)
   TEST_ENTRY  (strlcat)
-
+  TEST_ENTRY  (counters_init)
 #if 0
   /* These are for testing the test runner. */
   TEST_ENTRY  (fail_always)
