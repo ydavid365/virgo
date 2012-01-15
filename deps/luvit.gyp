@@ -22,6 +22,7 @@
         'luvit/src/lenv.c',
         'luvit/src/lhttp_parser.c',
         'luvit/src/lyajl.c',
+        'luvit/src/los.c',
         'luvit/src/luv.c',
         'luvit/src/luv_dns.c',
         'luvit/src/luv_fs.c',
