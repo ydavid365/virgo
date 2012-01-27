@@ -90,4 +90,9 @@ exports['test_rsa_bogus_key'] = function(test, asserts)
   test.done()
 end
 
+exports['test_x509'] = function(test, asserts)
+  asserts.ok(crypto.x509)
+  test.done()
+end
+
 return exports

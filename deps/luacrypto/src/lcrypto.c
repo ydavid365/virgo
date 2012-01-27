@@ -12,6 +12,7 @@
 #include <openssl/dsa.h>
 #include <openssl/pem.h>
 #include <openssl/bio.h>
+#include <openssl/x509.h>
 #include <stddef.h>
 
 
@@ -1487,6 +1488,36 @@ static int luacrypto_hex(lua_State *L)
   return 1;
 }
 
+/*************** x509 API ***************/
+
+struct x509 {
+  X509_STORE *cert_ctx;
+};
+
+static struct x509 *x509_new(lua_State *L)
+{
+  struct x509 *x = lua_newuserdata(L, sizeof(struct x509));
+  luaL_getmetatable(L, LUACRYPTO_X509);
+  lua_setmetatable(L, -2);
+  return x;
+}
+
+
+static int x509_gc(lua_State *L)
+{
+  return 0;
+}
+
+static int x509_from_pem(lua_State *L)
+{
+  return 0;
+}
+
+static int x509_to_pem(lua_State *L)
+{
+  return 0;
+}
+
 /*
 ** Create a metatable and leave it on top of the stack.
 */
@@ -1600,6 +1631,15 @@ static void create_metatables (lua_State *L)
     { "to_pem", pkey_to_pem},
     { NULL, NULL }
   };
+  struct luaL_reg x509_functions[] = {
+    { "from_pem", x509_from_pem },
+    { NULL, NULL }
+  };
+  struct luaL_reg x509_methods[] = {
+    { "__gc", x509_gc},
+    { "to_pem", x509_to_pem},
+    { NULL, NULL }
+  };
 
   luaL_register (L, LUACRYPTO_CORENAME, core_functions);
 #define CALLTABLE(n) create_call_table(L, #n, n##_fnew, n##_f##n)
@@ -1620,10 +1660,12 @@ static void create_metatables (lua_State *L)
   luacrypto_createmeta(L, LUACRYPTO_PKEYNAME, pkey_methods);
   luacrypto_createmeta(L, LUACRYPTO_SEALNAME, seal_methods);
   luacrypto_createmeta(L, LUACRYPTO_OPENNAME, open_methods);
+  luacrypto_createmeta(L, LUACRYPTO_X509, x509_methods);
 
   luaL_register (L, LUACRYPTO_RANDNAME, rand_functions);
   luaL_register (L, LUACRYPTO_HMACNAME, hmac_functions);
   luaL_register (L, LUACRYPTO_PKEYNAME, pkey_functions);
+  luaL_register (L, LUACRYPTO_X509, x509_functions);
 
   lua_pop (L, 3);
 }
