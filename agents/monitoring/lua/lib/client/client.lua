@@ -22,6 +22,7 @@ local Object = require('core').Object
 local Emitter = require('core').Emitter
 local logging = require('logging')
 local AgentProtocolConnection = require('../protocol/connection')
+local Handler = require('../protocol/handler')
 
 local fmt = require('string').format
 
@@ -40,6 +41,7 @@ function AgentClient:initialize(datacenter, id, token, host, port, timeout)
   self._port = port
   self._timeout = timeout or 5000
 
+  self._handler = nil
   self._ping_interval = nil
   self._sent_ping_count = 0
   self._got_pong_count = 0
@@ -70,6 +72,7 @@ function AgentClient:connect()
       else
         self._ping_interval = msg.result.ping_interval
         self:startPingInterval()
+        self:setUpRequestHandler()
       end
     end)
   end)
@@ -84,6 +87,10 @@ function AgentClient:connect()
   self._sock:on('end', function()
     self:emit('end')
   end)
+end
+
+function AgentClient:setUpRequestHandler()
+  self._handler = Handler:new(self.protocol, self._sock)
 end
 
 function AgentClient:startPingInterval()

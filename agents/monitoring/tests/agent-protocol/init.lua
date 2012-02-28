@@ -70,4 +70,27 @@ exports['test_fragmented_message'] = function(test, asserts)
   end)
 end
 
+exports['test_system_info_request_handler'] = function(test, asserts)
+  local sock = Emitter:new(), conn
+  fs.readFile('./agents/monitoring/tests/agent-protocol/system_info.network_interfaces.request.json', function(err, data)
+    if (err) then
+      p(err)
+      asserts.is_nil(err)
+      return
+    end
+
+    conn = AgentProtocolConnection:new('MYID', 'TOKEN', sock)
+    conn:on('message', function(msg)
+      asserts.equals(msg.target, 'endpoint')
+      asserts.equals(msg.source, 'X')
+      asserts.equals(msg.id, 0)
+      asserts.equals(msg.method, 'system_info.network_interfaces')
+      test.done()
+    end)
+
+    sock:emit('data', data)
+  end)
+end
+
+
 return exports
