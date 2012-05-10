@@ -1,8 +1,8 @@
 {
   "v": "1",
   "id": 1,
-  "target": "endpoint",
   "source": "agentA",
+  "target": "endpoint",
   "method": "heartbeat.ping",
   "params": {
     "timestamp": 1325645515246
