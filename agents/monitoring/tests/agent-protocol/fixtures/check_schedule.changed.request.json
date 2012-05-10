@@ -1,7 +1,7 @@
 {
-    "v": "1",
-    "id": 3,
-    "target": "endpoint",
-    "source": "agentA",
-    "method": "check_schedule.changed",
+  "v": "1",
+  "id": 3,
+  "source": "agentA",
+  "target": "endpoint",
+  "method": "check_schedule.changed"
 }
