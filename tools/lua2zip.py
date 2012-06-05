@@ -11,7 +11,7 @@ lib_lua = os.path.join('lib', 'lua')
 async_lua = os.path.join('lua_modules', 'async')
 bourbon_lua = os.path.join('lua_modules', 'bourbon')
 options_lua = os.path.join('lua_modules', 'options')
-luvit_lua = os.path.join('deps', 'luvit', 'lib')
+luvit_lua = os.path.join('deps', 'luvit', 'lib', 'luvit')
 monitoring_lua = os.path.join('agents', 'monitoring', 'lua')
 monitoring_tests = os.path.join('agents', 'monitoring', 'tests')
 
