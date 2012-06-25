@@ -22,3 +22,5 @@ monitoring-test.zip
 *.sig
 scheduler.state
 ._*
+*.suo
+ipch/*
