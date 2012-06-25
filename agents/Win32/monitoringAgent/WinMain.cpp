@@ -2,8 +2,6 @@
 Rackspace (c) 2011,2012
 */
 
-#include <Windows.h>
-#include <wchar.h>
 #pragma comment(lib, "advapi32.lib")
 
 #include "WinService.h"
