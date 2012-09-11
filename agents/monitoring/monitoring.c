@@ -107,12 +107,6 @@ int main(int argc, char* argv[])
     return EXIT_FAILURE;
   }
 
-  err = virgo_conf_args(v, argc, argv);
-  if (err) {
-    handle_error("Error in settings args", err);
-    return EXIT_FAILURE;
-  }
-
   /* Ensure we can read the zip file */
   fd = open(virgo_conf_get(v, "lua_load_path"), O_RDONLY);
   if (fd < 0) {
