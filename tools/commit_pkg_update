@@ -32,6 +32,6 @@ if __name__ == "__main__":
         sys.exit(0)
 
     machine, system, dist = system_info()
-    branch = "%s-%s-%s-%s-%s" % \
-        ("rackspace-monitoring-agent", tag, system, dist, machine)
+    branch = "%s-%s-%s" % \
+        ("rackspace-monitoring-agent", tag, dist)
     git_add_commit(dest, branch)
