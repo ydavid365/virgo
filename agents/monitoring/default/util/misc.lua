@@ -116,7 +116,6 @@ end
 function merge(...)
   local args = {...}
   local first = args[1] or {}
-  local n = select('#', ...)
   for i,t in pairs(args) do
     if i ~= 1 and t then
       for k, v in pairs(t) do
