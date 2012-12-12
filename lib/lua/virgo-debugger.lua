@@ -71,6 +71,10 @@ sb = [[
 
 ]],
 db = [[
+(t) trace
+Print every line of every function evaluated.  Call me again to turn off.
+]],
+db = [[
 (db) delete breakpoint [file:line]
 
 ]],
@@ -386,6 +390,14 @@ Debugger.switch = {
       end
     end
     return OPS.nop
+  end,
+  ["t"] = function(Debugger, file, line, args)
+    if self.trace == true then
+      self.trace = false
+    else
+      self.trace = true
+    end
+    return OPS.c
   end,
   ["sb"] = function(Debugger, file, line, args)
     file,line = unpack(args:split(':'))
