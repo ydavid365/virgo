@@ -3,10 +3,16 @@ update-rc.d rackspace-monitoring-agent defaults 91 09
 
 case "$1" in
     configure)
-         # Restart only if we find a config file in place
+         /etc/init.d/rackspace-monitoring-agent stop || :
+
+         # Cleanup init's mess if it fails to stop
+         PIDFILE=/var/run/rackspace-monitoring-agent.pid
+         start-stop-daemon --stop --retry 5 --quiet --pidfile $PIDFILE --name rackspace-monit --signal KILL
+         echo "stop returned $?"
+
+         # Start only if we find a config file in place
          if [ -f /etc/rackspace-monitoring-agent.cfg ]; then
-              service rackspace-monitoring-agent stop || :
-              service rackspace-monitoring-agent start || :
+              /etc/init.d/rackspace-monitoring-agent start || :
          fi
         ;;
     *)
