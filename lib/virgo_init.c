@@ -53,7 +53,9 @@ void virgo__crash_reporter_init(virgo_t **p_v){}
 
 void virgo__crash_reporter_destroy(){}
 
-int virgo__crash_reporter_force_dump(){}
+int virgo__crash_reporter_force_dump(){
+  return 0;
+}
 
 #endif
 
