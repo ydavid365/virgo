@@ -85,6 +85,10 @@ virgo__lua_force_crash(lua_State *L) {
   return 0;
 }
 
+static int
+virgo__lua_force_dump(lua_State *L){
+  return virgo__crash_reporter_force_dump();
+}
 
 #ifdef _WIN32
 
@@ -134,6 +138,10 @@ virgo__lua_init(virgo_t *v)
   lua_getglobal(L, "virgo");
   lua_pushcfunction(L, virgo__lua_force_crash);
   lua_setfield(L, -2, "force_crash");
+
+  lua_getglobal(L, "virgo");
+  lua_pushcfunction(L, virgo__lua_force_dump);
+  lua_setfield(L, -2, "force_dump");
 
   lua_getglobal(L, "virgo");
   lua_pushcfunction(L, virgo_time_now);

@@ -49,15 +49,11 @@ static int global_virgo_init = 0;
 
 #ifndef __linux__
 
-void virgo__crash_reporter_init(virgo_t **p_v)
-{
+void virgo__crash_reporter_init(virgo_t **p_v){}
 
-}
+void virgo__crash_reporter_destroy(){}
 
-void virgo__crash_reporter_destroy()
-{
-
-}
+int virgo__crash_reporter_force_dump(){}
 
 #endif
 

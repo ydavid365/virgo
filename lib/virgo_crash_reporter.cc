@@ -73,9 +73,12 @@ extern "C" {
     virgo_global_exception_handler = new google_breakpad::ExceptionHandler(path, NULL, dumpCallback, (void *)p_v, true);
   };
 
-  void
-  virgo__crash_reporter_destroy() {
+  void virgo__crash_reporter_destroy() {
     delete virgo_global_exception_handler;
+  };
+
+  int virgo__crash_reporter_force_dump() {
+    return virgo_global_exception_handler->WriteMinidump();
   };
 };
 
