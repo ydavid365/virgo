@@ -33,7 +33,7 @@ install: all
 	install -d ${ETCDIR}
 	install -d ${SHAREDIR}
 	install out/${BUILDTYPE}/virgo ${BINDIR}/${PKG_NAME}
-	install out/${BUILDTYPE}/${BUNDLE_NAME}.zip ${SHAREDIR}/${BUNDLE_NAME}-${BUNDLE_VERSION}.zip
+	install out/${BUILDTYPE}/${BUNDLE_NAME}-bundle.zip ${SHAREDIR}/${BUNDLE_NAME}-${BUNDLE_VERSION}.zip
 #	install out/${BUILDTYPE}/bundle-test.zip ${SHAREDIR}
 
 # spec_file_name = ${PKG_NAME}.spec
